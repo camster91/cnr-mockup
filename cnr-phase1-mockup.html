@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CNR Car Rental — Phase 1 mockup</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --line: #e6e6e6;
+    --soft: #f7f7f5;
+    --brand: #ff5f00;
+    --brand-blue: #1e73be;
+    --good: #16a34a;
+    --bad: #dc2626;
+    --code-bg: #0f172a;
+    --code-ink: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: #fff;
+    line-height: 1.55;
+    font-size: 16px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 24px 96px; }
+  .topbar {
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 24px;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  h1 { font-size: 30px; margin: 8px 0 4px; letter-spacing: -0.01em; }
+  h1 .sub { color: var(--muted); font-weight: 400; font-size: 15px; display: block; margin-top: 6px; }
+  h2 { font-size: 22px; margin: 48px 0 12px; padding-top: 16px; border-top: 1px solid var(--line); }
+  h3 { font-size: 16px; margin: 24px 0 8px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  p { margin: 0 0 12px; }
+  .lede { font-size: 17px; color: #333; margin: 8px 0 24px; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; vertical-align: middle; }
+  .pill.visible { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+  .pill.bg { background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin: 16px 0 24px; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .summary {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 24px 0;
+  }
+  .summary table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .summary th, .summary td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+  .summary th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .summary tr:last-child td { border-bottom: 0; }
+  .summary td.right { text-align: right; font-variant-numeric: tabular-nums; }
+  .pricebox {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .pricebox .total { font-size: 28px; font-weight: 700; }
+  .pricebox .total small { font-size: 14px; font-weight: 400; opacity: 0.7; display: block; }
+  .pricebox .terms { font-size: 13px; opacity: 0.85; }
+  .diff {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 16px 0 8px;
+  }
+  @media (max-width: 720px) { .diff { grid-template-columns: 1fr; } }
+  .diff .pane {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .diff .pane .ph {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .diff .pane.before .ph { background: #fef2f2; color: var(--bad); border-bottom: 1px solid #fecaca; }
+  .diff .pane.after .ph { background: #ecfdf5; color: var(--good); border-bottom: 1px solid #a7f3d0; }
+  .diff .pane .pb { padding: 16px; }
+  .pane ul { margin: 0; padding-left: 18px; }
+  .pane li { margin: 4px 0; }
+  .pane .strikethrough { text-decoration: line-through; color: var(--bad); }
+  .pane .added { color: var(--good); font-weight: 500; }
+  .navmock {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 13px;
+    color: #3a3a3a;
+    flex-wrap: wrap;
+  }
+  .navmock .logo { font-weight: 700; color: var(--ink); }
+  .navmock a { color: #3a3a3a; text-decoration: none; }
+  .navmock a.dead { color: var(--bad); }
+  .navmock a.live { color: var(--good); }
+  .navmock .badge {
+    font-size: 10px;
+    background: #fef2f2; color: var(--bad);
+    padding: 2px 6px; border-radius: 4px; margin-left: 4px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .navmock .badge.green {
+    background: #ecfdf5; color: var(--good);
+  }
+  .navmock .badge.hidden { display: none; }
+  .pagemock {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  .pagemock .hero {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: #fff;
+    padding: 32px 24px;
+  }
+  .pagemock .hero h1 { color: #fff; margin: 0 0 6px; font-size: 26px; }
+  .pagemock .hero p { color: #cbd5e1; margin: 0; font-size: 14px; }
+  .pagemock .form {
+    background: #f8fafc;
+    border-bottom: 1px solid var(--line);
+    padding: 18px 24px;
+  }
+  .pagemock .form .ftitle { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .pagemock .form .row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 8px; align-items: end; }
+  .pagemock .form .field { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: 12px; color: var(--muted); }
+  .pagemock .form .field .l { display: block; font-size: 10px; text-transform: uppercase; color: #94a3b8; margin-bottom: 2px; }
+  .pagemock .form .field .v { color: var(--ink); font-weight: 500; }
+  .pagemock .form .btn { background: var(--brand); color: #fff; border: 0; border-radius: 6px; padding: 10px 18px; font-size: 13px; font-weight: 600; }
+  .pagemock .body { padding: 28px 24px; }
+  .pagemock .body h2 { font-size: 18px; margin: 0 0 10px; padding: 0; border: 0; }
+  .pagemock .body h3 { font-size: 14px; margin: 20px 0 6px; color: var(--ink); text-transform: none; letter-spacing: 0; }
+  .pagemock .body p { font-size: 14px; margin: 0 0 10px; color: #333; }
+  .pagemock .body .thin { color: #94a3b8; font-style: italic; font-size: 13px; }
+  .pagemock .body .fleet { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0 4px; }
+  .pagemock .body .fleet .card {
+    border: 1px solid var(--line); border-radius: 6px; padding: 10px; font-size: 12px; text-align: center;
+  }
+  .pagemock .body .fleet .card .cls { font-weight: 600; color: var(--ink); display: block; }
+  .pagemock .body .fleet .card .ex { color: var(--muted); display: block; margin-top: 2px; font-size: 11px; }
+  .pagemock .body .info {
+    background: var(--soft); border-radius: 6px; padding: 12px 16px; font-size: 13px; margin: 12px 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px;
+  }
+  .pagemock .body .info b { color: var(--ink); }
+  .pagemock .body .faq { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 14px; }
+  .pagemock .body .faq .q { font-weight: 600; color: var(--ink); margin-top: 10px; font-size: 14px; }
+  .pagemock .body .faq .q:first-child { margin-top: 0; }
+  .pagemock .body .faq .a { color: #444; font-size: 13px; margin: 2px 0 0; }
+  .codewrap {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 8px 0 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .codewrap .c { color: #94a3b8; }
+  .codewrap .k { color: #f472b6; }
+  .codewrap .s { color: #86efac; }
+  .codewrap .n { color: #fde68a; }
+  .codewrap .v { color: #93c5fd; }
+  .terminal {
+    background: #0a0a0a;
+    color: #d1d5db;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .terminal .ok { color: #4ade80; }
+  .terminal .err { color: #f87171; }
+  .terminal .info { color: #60a5fa; }
+  .terminal .dim { color: #6b7280; }
+  .terminal .hl { color: #fbbf24; }
+  .footernote {
+    margin-top: 24px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--brand);
+    background: var(--soft);
+    font-size: 14px;
+    color: #333;
+  }
+  .nextup {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 12px;
+  }
+  .nextup h3 { margin: 0 0 8px; color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 15px; }
+  .nextup ul { margin: 6px 0 0 0; padding-left: 20px; font-size: 14px; color: #333; }
+  .nextup li { margin: 4px 0; }
+  .tag-new {
+    display: inline-block;
+    background: var(--brand);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .arrow { color: var(--brand); font-weight: 700; margin: 0 6px; }
+</style>
+</head>
+<body>
+<div class="topbar">CNR Car Rental · Phase 1 mockup · prepared for Joey · 19 June 2026</div>
+
+<div class="wrap">
+
+  <h1>What changes after Phase 1 <span class="sub">Four fixes. Two are visible on the screen. Two are invisible but matter for Google.</span></h1>
+
+  <div class="legend">
+    <span><i style="background:#ecfdf5;border:1px solid #a7f3d0"></i> Customers see this on the page</span>
+    <span><i style="background:#eef2ff;border:1px solid #c7d2fe"></i> Background code change (visible to Google, not to you)</span>
+  </div>
+
+  <div class="summary">
+    <table>
+      <thead><tr><th>Fix</th><th>Where</th><th>Customer sees it</th><th class="right">Hours</th><th class="right">Cost</th></tr></thead>
+      <tbody>
+        <tr><td>1 · Reservations page rewrite</td><td>/reservations/</td><td><span class="pill visible">Visible</span></td><td class="right">3.5</td><td class="right">$140</td></tr>
+        <tr><td>2 · Main menu "Business Collaboration" link</td><td>Header nav</td><td><span class="pill visible">Visible</span></td><td class="right">0.5</td><td class="right">$20</td></tr>
+        <tr><td>3 · LocalBusiness schema</td><td>Homepage (head)</td><td><span class="pill bg">Background</span></td><td class="right">2.5</td><td class="right">$100</td></tr>
+        <tr><td>4 · Sitemap redirect</td><td>cnrcarrental.com/sitemap.xml</td><td><span class="pill bg">Background</span></td><td class="right">1.5</td><td class="right">$60</td></tr>
+        <tr><td>5 · Validation &amp; Search Console submission</td><td>All fixes</td><td><span class="pill bg">Background</span></td><td class="right">0.5</td><td class="right">$20</td></tr>
+        <tr><td colspan="4" style="text-align:right;font-weight:600">Total</td><td class="right" style="font-weight:700">$340</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pricebox">
+    <div>
+      <div class="total">$340 <small>fixed bid · 5&ndash;7 business days</small></div>
+    </div>
+    <div class="terms">50% to start &middot; 50% on completion</div>
+  </div>
+
+  <!-- ============================================= -->
+  <h2>1 &middot; Reservations page rewrite <span class="pill visible">visible</span></h2>
+  <p>Your booking form stays at the top, exactly where it is. The change is what surrounds it. Right now the page is 93 words of human-readable text. Below the form I'm adding 600&ndash;800 words of useful content (intro, fleet preview, pickup details, terms summary, short FAQ). The form doesn't move. Nothing about the booking flow changes.</p>
+
+  <div class="pagemock">
+    <div class="hero">
+      <h1>Reserve your car <span class="tag-new">new</span></h1>
+      <p>Rent directly from CNR Car Rental in Richmond, BC. No middleman, no hidden fees, no upsell pressure.</p>
+    </div>
+    <div class="form">
+      <div class="ftitle">Booking widget &mdash; unchanged</div>
+      <div class="row">
+        <div class="field"><span class="l">Pick-up location</span><span class="v">7900 Westminster Hwy</span></div>
+        <div class="field"><span class="l">Pick-up date</span><span class="v">Jun 22, 2026</span></div>
+        <div class="field"><span class="l">Return date</span><span class="v">Jun 25, 2026</span></div>
+        <div class="field"><span class="l">Promo code</span><span class="v">CNRSUMMER26</span></div>
+        <button class="btn">Search cars</button>
+      </div>
+    </div>
+    <div class="body">
+      <h2>Welcome to CNR Car Rental <span class="tag-new">new</span></h2>
+      <p>CNR Car Rental is a local, independent rental company based in Richmond, British Columbia. We rent daily, weekly, and monthly to Vancouver visitors, Lower Mainland residents, and corporate clients. Every car on our website is parked at our Richmond shop at 7900 Westminster Hwy &mdash; the car you reserve is the car you pick up, with no shuttle to a remote lot and no third-party operator in between.</p>
+      <p>You can reserve any vehicle in our fleet using the form above, by phone at 604-370-1779 during counter hours, or by WeChat at CNRAUTO. We confirm every booking the same business day, usually within the hour. Walk-ins are welcome, but reservations guarantee the exact vehicle class you want at the rate you saw online.</p>
+
+      <h3>Our fleet at a glance <span class="tag-new">new</span></h3>
+      <div class="fleet">
+        <div class="card"><span class="cls">Economy</span><span class="ex">Nissan Versa, Toyota Corolla</span></div>
+        <div class="card"><span class="cls">SUV</span><span class="ex">Toyota RAV4, Honda CR-V</span></div>
+        <div class="card"><span class="cls">EV</span><span class="ex">Tesla Model 3, Model Y</span></div>
+        <div class="card"><span class="cls">Minivan</span><span class="ex">Chrysler Pacifica</span></div>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px">Exact make and model depends on the day's availability. Class is always guaranteed.</p>
+
+      <h3>Pickup location and hours <span class="tag-new">new</span></h3>
+      <div class="info">
+        <div><b>Address</b><br>7900 Westminster Hwy, Unit 111<br>Richmond, BC V6X 1A5</div>
+        <div><b>Counter hours</b><br>Monday&ndash;Sunday, 9:00 AM &ndash; 5:00 PM</div>
+        <div><b>Self pick-up / return</b><br>Available 24/7 with confirmed booking</div>
+        <div><b>Closest airport</b><br>YVR &mdash; 10 min drive</div>
+      </div>
+      <p>Our shop sits on the north side of Westminster Highway, one block west of No. 3 Road. Free customer parking is on site. If you're coming from YVR, take the Canada Line to Aberdeen Station, then walk five minutes west or grab a short taxi &mdash; the entire trip is about 25 minutes door to door.</p>
+
+      <h3>What's included in every rental</h3>
+      <p>Every rental includes basic insurance with a $1,000 deductible, unlimited mileage within British Columbia, and 24/7 roadside assistance. Additional drivers can be added at the counter at no charge. Child seats, GPS units, and toll transponders are available on request &mdash; mention them in the booking notes and we'll have them ready at pickup.</p>
+      <p>Fuel policy is "same as pickup" &mdash; we hand the car over with a full tank and ask that you return it with a full tank. If you'd rather not, we'll refill it for you at cost plus a small service fee. Cleaning is on us for normal use; a detailing fee applies if the car comes back requiring more than a standard wash.</p>
+
+      <h3>Who we rent to</h3>
+      <p>Tourists and visitors with a valid home-country driver's licence, BC residents with a valid Class 5, corporate clients on monthly contracts, and international visitors who can email a passport + licence copy in advance to skip the counter paperwork.</p>
+
+      <h3>Long-term and business rentals</h3>
+      <p>Rentals longer than 30 days move to a monthly rate that's typically 40&ndash;50% below the daily rate, with the option to swap vehicles mid-term. Business clients can set up a corporate account with a single monthly invoice covering all drivers and vehicles. Talk to us before you book if your rental will run longer than a month.</p>
+
+      <h3>Frequently asked questions <span class="tag-new">new</span></h3>
+      <div class="faq">
+        <div class="q">Do I need a credit card to reserve?</div>
+        <div class="a">A credit card in the driver's name is required to confirm the booking hold. Debit cards are accepted for final payment at pickup, but not for the hold. If you don't have a credit card, call us before booking and we can usually work something out.</div>
+        <div class="q">Can I pick up the car outside counter hours?</div>
+        <div class="a">Yes. Self pick-up is available 24/7 once your booking is confirmed. On the morning of your pickup, you'll receive a text with a lockbox code, a short walkthrough video, and the plate number. Self pickup adds a $25 after-hours processing fee, which we discount to $10 if you book a week or more in advance.</div>
+        <div class="q">What is your cancellation policy?</div>
+        <div class="a">Free cancellation up to 48 hours before pickup. Inside 48 hours, a one-day rental fee applies. No-shows are charged the full rental amount. For monthly rentals, we ask for 7 days' notice.</div>
+        <div class="q">Do you deliver to YVR?</div>
+        <div class="a">We don't deliver to the airport terminal, but our Richmond shop is 10 minutes from YVR and reachable by Canada Line plus a 5-minute walk. If you'd rather not transit with luggage, the taxi from YVR to our shop is a flat $15&ndash;20.</div>
+        <div class="q">What documents do I need at pickup?</div>
+        <div class="a">Your driver's licence, a second piece of government ID, and the credit card used to book. International visitors should also bring their passport and, if your licence is not in English, an International Driving Permit or a certified translation.</div>
+        <div class="q">Can I add an additional driver?</div>
+        <div class="a">Yes. Additional drivers are free as long as they meet our age and licence requirements and are present at pickup so we can add them to the contract. There's no charge for a spouse or a co-worker on a corporate rental.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footernote"><b>Why this matters.</b> Google won't rank a 93-word page for "Vancouver car rental reservations." After this change, the page has enough real content for Google to understand what it is and serve it for the queries that bring you bookings. The form is untouched. The booking flow is untouched.</p>
+  <p style="font-size:13px;color:var(--muted);margin-top:4px">Heads up: the section bodies above are <b>draft copy I wrote</b> using what I could see on the live site (fleet types, address, hours, contact methods) and a few reasonable assumptions where details weren't published. Specific numbers &mdash; founding year, deductible amount, after-hours fee, fuel policy details &mdash; are my best guess and need your sign-off before publishing. I'll send the final draft as a Google Doc for you to edit before anything goes live on the site.</p>
+
+  <!-- ============================================= -->
+  <h2>2 &middot; Main menu "Business Collaboration" link <span class="pill visible">visible</span></h2>
+  <p>Right now, clicking that menu item takes the visitor to a "Page Not Found" error. Every click bounces, and Google sees the 404 in Search Console. The fix is one of three options &mdash; I'll need your call before I implement.</p>
+
+  <div class="diff">
+    <div class="pane before">
+      <div class="ph">Before</div>
+      <div class="pb">
+        <div class="navmock">
+          <span class="logo">CNR</span>
+          <a>Reservations</a>
+          <a>Monthly Rentals</a>
+          <a>Car Share</a>
+          <a class="dead">Business Collaboration <span class="badge">404</span></a>
+          <a>FAQs</a>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-top:10px">Click &rarr; "Page Not Found" error. Visitor lost. Google counts another 404.</p>
+      </div>
+    </div>
+    <div class="pane after">
+      <div class="ph">After (option A &mdash; recommended)</div>
+      <div class="pb">
+        <div class="navmock">
+          <span class="logo">CNR</span>
+          <a>Reservations</a>
+          <a>Monthly Rentals</a>
+          <a>Car Share</a>
+          <a class="live">Business Collaboration <span class="badge green">live</span></a>
+          <a>FAQs</a>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-top:10px">Click &rarr; a real page that describes your fleet partnerships, corporate accounts, and long-term lease options.</p>
+      </div>
+    </div>
+  </div>
+
+  <p>Two other ways to fix it, if you prefer:</p>
+  <ul>
+    <li><b>Option B &mdash; repoint.</b> Point the link at an existing page that already covers the topic (e.g. <i>Monthly Rentals</i> or <i>FAQs</i>). 5 minutes of work.</li>
+    <li><b>Option C &mdash; remove.</b> Delete the menu item entirely. Cleanest, but loses the entry point if you do offer business rentals.</li>
+  </ul>
+  <p class="footernote"><b>My recommendation:</b> Option A. You already mention corporate and long-term options on the Monthly Rentals page, so the content is mostly there &mdash; I just need to lift it into its own page and link back. I can draft the page copy and send it to you for sign-off before publishing.</p>
+
+  <!-- ============================================= -->
+  <h2>3 &middot; LocalBusiness schema <span class="pill bg">background</span></h2>
+  <p>Customers won't see any change on the page. This is a block of JSON-LD added to the homepage's <code>&lt;head&gt;</code>. Google reads it to confidently tie your site to "car rental in Vancouver / Richmond" searches. It's the single biggest lever for showing up in Google's local results panel.</p>
+
+  <p>Below is the exact block I'll add. The values in <span style="background:#fef9c3;padding:0 4px;border-radius:3px">yellow</span> are placeholders &mdash; I need you to confirm the official name, address, phone, and hours before publishing.</p>
+
+<div class="codewrap"><span class="c">&lt;!-- Added to homepage &lt;head&gt; via Rank Math custom schema or functions.php --&gt;</span>
+<span class="k">&lt;script</span> <span class="v">type</span>=<span class="s">"application/ld+json"</span><span class="k">&gt;</span>
+{
+  <span class="v">"@context"</span>: <span class="s">"https://schema.org"</span>,
+  <span class="v">"@type"</span>: <span class="s">"CarRental"</span>,
+  <span class="v">"@id"</span>: <span class="s">"https://cnrcarrental.com/#business"</span>,
+  <span class="v">"name"</span>: <span class="s">"CNR Car Rental"</span>,
+  <span class="v">"alternateName"</span>: <span class="s">"CNR Auto Rental"</span>,
+  <span class="v">"url"</span>: <span class="s">"https://cnrcarrental.com"</span>,
+  <span class="v">"telephone"</span>: <span class="s">"+1-604-370-1779"</span>,
+  <span class="v">"email"</span>: <span class="s">"service@cnrauto.ca"</span>,
+  <span class="v">"priceRange"</span>: <span class="s">"$$"</span>,
+  <span class="v">"image"</span>: <span class="s">"https://cnrcarrental.com/wp-content/uploads/2024/07/cnr_logo_square.png"</span>,
+  <span class="v">"address"</span>: {
+    <span class="v">"@type"</span>: <span class="s">"PostalAddress"</span>,
+    <span class="v">"streetAddress"</span>: <span class="s">"7900 Westminster Hwy #111"</span>,
+    <span class="v">"addressLocality"</span>: <span class="s">"Richmond"</span>,
+    <span class="v">"addressRegion"</span>: <span class="s">"BC"</span>,
+    <span class="v">"postalCode"</span>: <span class="s">"V6X 1A5"</span>,
+    <span class="v">"addressCountry"</span>: <span class="s">"CA"</span>
+  },
+  <span class="v">"geo"</span>: {
+    <span class="v">"@type"</span>: <span class="s">"GeoCoordinates"</span>,
+    <span class="v">"latitude"</span>: <mark style="background:#fef9c3;color:inherit;padding:0 4px;border-radius:3px">49.1666</mark>,
+    <span class="v">"longitude"</span>: <mark style="background:#fef9c3;color:inherit;padding:0 4px;border-radius:3px">-123.1336</mark>
+  },
+  <span class="v">"openingHoursSpecification"</span>: [
+    {
+      <span class="v">"@type"</span>: <span class="s">"OpeningHoursSpecification"</span>,
+      <span class="v">"dayOfWeek"</span>: [<span class="s">"Monday"</span>,<span class="s">"Tuesday"</span>,<span class="s">"Wednesday"</span>,<span class="s">"Thursday"</span>,<span class="s">"Friday"</span>,<span class="s">"Saturday"</span>,<span class="s">"Sunday"</span>],
+      <span class="v">"opens"</span>: <span class="s">"09:00"</span>,
+      <span class="v">"closes"</span>: <span class="s">"17:00"</span>
+    }
+  ],
+  <span class="v">"areaServed"</span>: [
+    { <span class="v">"@type"</span>: <span class="s">"City"</span>, <span class="v">"name"</span>: <span class="s">"Vancouver"</span> },
+    { <span class="v">"@type"</span>: <span class="s">"City"</span>, <span class="v">"name"</span>: <span class="s">"Richmond"</span> },
+    { <span class="v">"@type"</span>: <span class="s">"City"</span>, <span class="v">"name"</span>: <span class="s">"Burnaby"</span> },
+    { <span class="v">"@type"</span>: <span class="s">"City"</span>, <span class="v">"name"</span>: <span class="s">"Surrey"</span> }
+  ],
+  <span class="v">"sameAs"</span>: [
+    <span class="s">"https://www.google.com/maps"</span> <span class="c">// TODO: replace with your Google Business Profile URL</span>
+  ]
+}
+<span class="k">&lt;/script&gt;</span></div>
+
+  <p style="font-size:13px;color:var(--muted)">After publishing, I run the URL through Google's <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener">Rich Results test</a> and submit the sitemap in Search Console. You'll get a screenshot of the green "Eligible for car rental rich result" line as proof.</p>
+
+  <!-- ============================================= -->
+  <h2>4 &middot; Sitemap redirect fix <span class="pill bg">background</span></h2>
+  <p>Right now, <code>cnrcarrental.com/sitemap.xml</code> returns a 301 redirect chain. Google's crawler follows it and lands on <code>/sitemap_index.xml</code>, which is currently returning a 404. The result: Google's guessing which of your pages to crawl, and several of them are being discovered slowly (or not at all).</p>
+
+  <p>Here's what I see today when I curl the URL:</p>
+
+<div class="terminal"><span class="dim">$</span> curl -sI -L https://cnrcarrental.com/sitemap.xml
+<span class="info">HTTP/2 301</span>
+<span class="hl">location:</span> https://cnrcarrental.com/sitemap_index.xml
+<span class="dim">x-redirect-by: Rank Math</span>
+
+<span class="info">HTTP/2 404</span>
+<span class="hl">content-type:</span> text/html; charset=UTF-8
+<span class="err">page not found.</span></div>
+
+  <p>After the fix, the same command returns:</p>
+
+<div class="terminal"><span class="dim">$</span> curl -sI -L https://cnrcarrental.com/sitemap.xml
+<span class="ok">HTTP/2 200</span>
+<span class="hl">content-type:</span> application/xml; charset=UTF-8
+
+<span class="ok">HTTP/2 200</span>
+<span class="hl">content-type:</span> application/xml; charset=UTF-8
+<span class="dim">(valid sitemap_index.xml, lists every indexable page)</span></div>
+
+  <p>The fix is in Rank Math's sitemap settings (clear the redirect, point it at the right module) plus a hard <code>sitemap_index.xml</code> verification. Once the URL returns <code>200 application/xml</code>, I submit it to Search Console and Google re-crawls within a day or two.</p>
+
+  <!-- ============================================= -->
+  <h2>What happens on day one <span class="tag-new">new</span></h2>
+  <div class="nextup">
+    <h3>To get started I need three things from you:</h3>
+    <ul>
+      <li>WordPress admin login (or cPanel + FTP) &mdash; to make the page, menu, and schema changes</li>
+      <li>Google Search Console access (read + submit is enough) &mdash; to verify the sitemap and submit changes</li>
+      <li>Confirmation of: official business name, full street address, phone, hours, and your Google Business Profile URL (for the schema)</li>
+    </ul>
+    <p style="margin-top:14px;font-size:13px;color:var(--muted)">Once I have those, days 1&ndash;2 cover items 1&ndash;2 (the visible changes), days 3&ndash;4 cover items 3&ndash;4 (the background changes), day 5 is validation and Search Console submission, days 6&ndash;7 are buffer for any revisions.</p>
+  </div>
+
+  <p style="margin-top:24px;font-size:13px;color:var(--muted)">Mockup prepared 19 June 2026. The address, hours, and phone shown above are taken from your live site footer. If anything is off (for example, you want the hours to read "Mon&ndash;Sat 9&ndash;5" or the address formatted differently), tell me and I'll update both the schema block and the new page copy to match.</p>
+
+</div>
+</body>
+</html>
